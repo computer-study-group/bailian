@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#define MAX 26 
+
+typedef struct TrieNode
+{
+	int nCount;
+	struct TrieNode *next[MAX];
+}TrieNode;
+
+TrieNode Memory[1002*20];
+int allocp=0;
+char pro[1002][22];
+char temp[22];
+
+TrieNode * createTrieNode()
+{
+	TrieNode *tmp=&Memory[allocp++];
+	tmp->nCount=1;
+	for(int i=0;i<MAX;i++)
+		tmp->next[i]=NULL;
+	return tmp;
+}
+
+void insertTrie(TrieNode * * pRoot, char * str)
+{
+	int i=0,k;
+	TrieNode *tmp=*pRoot;
+	
+	while(str[i])
+	{
+		k=str[i]-'a';
+		if(tmp->next[k])
+			tmp->next[k]->nCount++;
+		else
+			tmp->next[k]=createTrieNode();
+		i++;
+		tmp=tmp->next[k];
+	}
+}
+
+int main()
+{
+	int i=0,j,num,t;
+	TrieNode *tmp=createTrieNode();
+	TrieNode *head; 
+	
+	while(gets(pro[i])!=NULL)
+	{
+		insertTrie(&tmp,pro[i]);
+		i++;
+	}
+	head=tmp;
+	num=i;
+	for(i=0;i<num;i++)
+	{
+		j=0;
+		tmp=head;
+		printf("%s ",pro[i]);
+		for(j=0;pro[i][j];j++)
+		{
+			t=pro[i][j]-'a';
+			if(tmp->next[t]==NULL)
+				break;
+			tmp=tmp->next[t];
+			printf("%c",pro[i][j]);
+			if(tmp->nCount==1)
+				break;			
+		}
+		printf("\n");
+	}
+}
